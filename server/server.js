@@ -9,6 +9,7 @@ var {User} = require('./models/user');
 var app = express();
 
 app.use(bodyParser.json());
+const port= process.env.PORT||3000;
 
 app.post('/todos', (req, res) => {
   var todo = new Todo({
@@ -43,8 +44,18 @@ app.get('/todos/:id',(req,res)=>{
     return res.status(404).send();
   });
 })
-
-app.listen(3000, () => {
+app.delete('/todos/:id',(req,res)=>{
+  var id=req.params.id;
+  Todo.findByIdAndRemove(id).then((res)=>{
+    if(!res){
+      return res.status(404).send();
+    }
+    res.send({res});
+  }).catch((e)=>{
+      return res.status(404).send();
+  })
+})
+app.listen(port, () => {
   console.log('Started on port 3000');
 });
 
